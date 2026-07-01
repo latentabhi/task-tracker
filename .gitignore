@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Production builds
+frontend/dist/
+dist/
+
+# Environment configurations
+.env
+backend/.env
+frontend/.env
+
+# Local logs
+*.log
+npm-debug.log*
+
+# OS metadata
+.DS_Store
+Thumbs.db
