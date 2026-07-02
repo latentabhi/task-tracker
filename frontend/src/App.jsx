@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { CheckSquare } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { api } from './utils/api';
@@ -114,7 +114,7 @@ export default function App() {
     });
   };
 
-  const particles = () => {
+  const bgParticles = useMemo(() => {
     return Array.from({ length: 18 }).map((_, i) => {
       const size = Math.random() * 140 + 40;
       const left = Math.random() * 100;
@@ -137,11 +137,11 @@ export default function App() {
         />
       );
     });
-  };
+  }, []);
 
   return (
     <>
-      <div className="bg-particles-container">{particles()}</div>
+      <div className="bg-particles-container">{bgParticles}</div>
       <div className="app-container">
         <div className="toast-container">
           {alerts.map(a => (
@@ -166,12 +166,12 @@ export default function App() {
                     className="workspace-input"
                     value={tempWorkspace}
                     onChange={(e) => setTempWorkspace(e.target.value)}
-                    placeholder="Workspace name..."
+                    placeholder="Workspace..."
                     maxLength={20}
                     autoFocus
-                    onBlur={() => setTimeout(() => setIsEditingWorkspace(false), 200)}
                   />
                   <button type="submit" className="workspace-btn save">Save</button>
+                  <button type="button" className="workspace-btn cancel" onClick={() => { setTempWorkspace(workspace); setIsEditingWorkspace(false); }}>✕</button>
                 </form>
               ) : (
                 <div className="workspace-badge" onClick={() => setIsEditingWorkspace(true)} title="Click to switch workspace">
