@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { CheckSquare } from 'lucide-react';
+import { CheckSquare, Search } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { api } from './utils/api';
 import Dashboard from './components/Dashboard';
@@ -15,6 +15,11 @@ export default function App() {
   const [workspace, setWorkspace] = useState(api.getUser());
   const [tempWorkspace, setTempWorkspace] = useState(api.getUser());
   const [isEditingWorkspace, setIsEditingWorkspace] = useState(false);
+
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('dueDate');
 
   useEffect(() => {
     load();
@@ -114,6 +119,27 @@ export default function App() {
     });
   };
 
+  const filtered = useMemo(() => {
+    const weights = { high: 3, medium: 2, low: 1 };
+    
+    const matched = tasks.filter(t => {
+      const title = t.title ? String(t.title).toLowerCase() : '';
+      const desc = t.description ? String(t.description).toLowerCase() : '';
+      const q = search.toLowerCase();
+      return (title.includes(q) || desc.includes(q)) &&
+        (statusFilter === 'all' || t.status === statusFilter) &&
+        (priorityFilter === 'all' || t.priority === priorityFilter);
+    });
+
+    return [...matched].sort((a, b) => {
+      if (sortBy === 'dueDate') return new Date(a.dueDate) - new Date(b.dueDate);
+      if (sortBy === 'createdAt') return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortBy === 'title') return a.title.localeCompare(b.title);
+      if (sortBy === 'priority') return weights[b.priority] - weights[a.priority];
+      return 0;
+    });
+  }, [tasks, search, statusFilter, priorityFilter, sortBy]);
+
   const bgParticles = useMemo(() => {
     return Array.from({ length: 18 }).map((_, i) => {
       const size = Math.random() * 140 + 40;
@@ -188,6 +214,43 @@ export default function App() {
         
         <Dashboard tasks={tasks} />
 
+        <div className="controls-panel">
+          <div className="search-bar">
+            <Search size={18} className="search-icon" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search tasks..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="filters-row">
+            <select className="filter-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+
+            <select className="filter-select" value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)}>
+              <option value="all">All Priorities</option>
+              <option value="low">Low Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+
+            <span className="sort-label">Sort By:</span>
+            <select className="filter-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <option value="dueDate">Due Date</option>
+              <option value="createdAt">Date Created</option>
+              <option value="title">Alphabetical</option>
+              <option value="priority">Priority</option>
+            </select>
+          </div>
+        </div>
+
         <div className="dashboard-layout">
           <aside>
             <TaskForm onSubmit={save} currentTask={editing} onCancel={() => setEditing(null)} />
@@ -200,7 +263,7 @@ export default function App() {
               </div>
             ) : (
               <TaskList
-                tasks={tasks}
+                tasks={filtered}
                 onStatusToggle={toggle}
                 onEdit={edit}
                 onDelete={remove}
