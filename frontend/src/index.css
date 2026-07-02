@@ -1045,6 +1045,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   display: flex;
   gap: 0.4rem;
   align-items: center;
+  animation: workspaceFormIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .workspace-input {
@@ -1101,6 +1102,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   cursor: pointer;
   transition: var(--transition-smooth);
   user-select: none;
+  animation: workspaceBadgeIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .workspace-badge:hover {
@@ -1123,4 +1125,30 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   color: #818cf8;
   font-weight: 600;
   letter-spacing: 0.02em;
+}
+
+@keyframes workspaceBadgeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-4px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes workspaceFormIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(4px);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
 }
