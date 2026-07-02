@@ -1016,3 +1016,94 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     font-size: 0.85rem;
   }
 }
+
+/* ==========================================
+   Workspace Switcher Widget Styling
+   ========================================== */
+
+.brand-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .brand-bar {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+.workspace-switcher {
+  display: flex;
+  align-items: center;
+}
+
+.workspace-form {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.workspace-input {
+  background: rgba(10, 11, 14, 0.8);
+  border: 1px solid var(--border-color-focus);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  outline: none;
+  font-family: inherit;
+  width: 140px;
+}
+
+.workspace-btn {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.workspace-btn:hover {
+  background: #4338ca;
+}
+
+.workspace-badge {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  user-select: none;
+}
+
+.workspace-badge:hover {
+  border-color: var(--border-color-hover);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.workspace-badge-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-right: 0.5rem;
+  border-right: 1px solid var(--border-color);
+  padding-right: 0.5rem;
+}
+
+.workspace-badge-val {
+  font-size: 0.8rem;
+  color: #818cf8;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}

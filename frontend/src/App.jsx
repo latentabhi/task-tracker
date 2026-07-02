@@ -12,10 +12,13 @@ export default function App() {
   const [editing, setEditing] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [wait, setWait] = useState(true);
+  const [workspace, setWorkspace] = useState(api.getUser());
+  const [tempWorkspace, setTempWorkspace] = useState(api.getUser());
+  const [isEditingWorkspace, setIsEditingWorkspace] = useState(false);
 
   useEffect(() => {
     load();
-  }, []);
+  }, [workspace]);
 
   const load = async () => {
     try {
@@ -90,6 +93,18 @@ export default function App() {
     }
   };
 
+  const handleWorkspaceSubmit = (e) => {
+    e.preventDefault();
+    const val = tempWorkspace.trim();
+    if (!val) return;
+    const clean = val.replace(/[^a-zA-Z0-9_-]/g, '');
+    api.setUser(clean);
+    setWorkspace(clean);
+    setTempWorkspace(clean);
+    setIsEditingWorkspace(false);
+    notify(`Workspace: ${clean}`);
+  };
+
   const confettiBurst = () => {
     confetti({
       particleCount: 80,
@@ -135,13 +150,38 @@ export default function App() {
         </div>
         
         <header className="app-header">
-          <div className="brand">
-            <div className="brand-icon">
-              <CheckSquare size={24} color="#ffffff" />
+          <div className="brand-bar">
+            <div className="brand">
+              <div className="brand-icon">
+                <CheckSquare size={24} color="#ffffff" />
+              </div>
+              <h1 className="brand-name">FlowTask</h1>
             </div>
-            <h1 className="brand-name">FlowTask</h1>
+
+            <div className="workspace-switcher">
+              {isEditingWorkspace ? (
+                <form onSubmit={handleWorkspaceSubmit} className="workspace-form">
+                  <input
+                    type="text"
+                    className="workspace-input"
+                    value={tempWorkspace}
+                    onChange={(e) => setTempWorkspace(e.target.value)}
+                    placeholder="Workspace name..."
+                    maxLength={20}
+                    autoFocus
+                    onBlur={() => setTimeout(() => setIsEditingWorkspace(false), 200)}
+                  />
+                  <button type="submit" className="workspace-btn save">Save</button>
+                </form>
+              ) : (
+                <div className="workspace-badge" onClick={() => setIsEditingWorkspace(true)} title="Click to switch workspace">
+                  <span className="workspace-badge-label">Workspace</span>
+                  <span className="workspace-badge-val">{workspace}</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
             Keep track of your project workflows.
           </div>
         </header>
